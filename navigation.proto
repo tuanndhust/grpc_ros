@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package robot;
+
+message Header {
+  string frame_id = 1;
+  int32 sec = 2;
+  int32 nanosec = 3;
+}
+
+message Point {
+  double x = 1;
+  double y = 2;
+  double z = 3;
+}
+
+message Quaternion {
+  double x = 1;
+  double y = 2;
+  double z = 3;
+  double w = 4;
+}
+
+message Pose {
+  Point position = 1;
+  Quaternion orientation = 2;
+}
+
+message PoseStamped {
+  Header header = 1;
+  Pose pose = 2;
+}
+
+message Empty {}
+
+service RobotService {
+  rpc StreamGoal(Empty) returns (stream PoseStamped);
+  rpc SendLocalization(PoseStamped) returns (Empty);
+}

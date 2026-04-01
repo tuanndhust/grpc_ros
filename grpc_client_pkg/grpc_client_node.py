@@ -13,7 +13,7 @@ class GRPCClientNode(Node):
         super().__init__('grpc_client_node')
 
         # ===== gRPC =====
-        self.channel = grpc.insecure_channel('localhost:50051')
+        self.channel = grpc.insecure_channel('localhost:50052')
         self.stub = navigation_pb2_grpc.RobotServiceStub(self.channel)
 
         # ===== ROS =====
@@ -84,7 +84,8 @@ class GRPCClientNode(Node):
 
         try:
             proto_msg = self.ros_to_proto(self.latest_pose)
-            self.stub.SendLocalization(proto_msg)
+            md = (("robot-id", "1"),)  # example metadata, adjust as needed
+            self.stub.SendLocalization(proto_msg, metadata=md   , timeout=5.0)
         except Exception as e:
             self.get_logger().error(f"SendLocalization error: {e}")
 
